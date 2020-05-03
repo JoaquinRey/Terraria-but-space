@@ -1,10 +1,10 @@
 import pygame
+from models import *
 
 pygame.init()
 WIDTH = 1280
 HEIGHT = 720
 blocks = []
-wallpapers = []
 game = True
 
 layer = 2
@@ -12,13 +12,7 @@ scale = 4
 Screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Not really terraria")
 Screen.fill((250,250,250))
-grassBlock = pygame.image.load(r'images\grass\GrassBlock.png')
-grassBlock = pygame.transform.rotozoom(grassBlock, 0, scale)
-blueRocks = pygame.image.load(r'images\backgrounds\blueRocks.png')
-blueRocks = pygame.transform.rotozoom(blueRocks, 0, 0.67)
-dirt = pygame.image.load(r'images\dirt\dirt.png')
-dirt = pygame.transform.rotozoom(dirt, 0, scale)
-wallpapers.append(blueRocks)
+
 
 class Block:
 
@@ -29,8 +23,9 @@ class Block:
             self.block = dirt
         self.x = x
         self.y = y
+        self.hitbox = pygame.Rect(self.x,self.y,10*scale,10*scale)
 
-def worldGen():
+def worldGenV1():
     for i in range(int(WIDTH / (10 * scale))):
         blocks.append(Block(i*(10*scale),HEIGHT-((10*scale)*layer),('grass')))
     for i in range(int(WIDTH / (10 * scale))):
@@ -51,7 +46,25 @@ def getEvents():
             pygame.quit()
             game = False
 
-worldGen()
-while game == True:
-    getEvents()
-    displayImage()
+def worldGen(size):
+    blanks = '[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0]'
+    with open("worldGen.txt","a") as f:
+        print('works')
+        if size == 'small':
+            f.write(f'world = [')
+            for i in range(20):
+                if i == 0:
+                    f.write(f'{blanks},\n')
+                if i < 19 and i > 0:
+                    f.write(f'        {blanks},\n')
+                if i == 19:
+                    f.write(f'        {blanks}]')
+            f.close()
+    
+
+if __name__ == '__main__':
+    worldGenV1()
+    worldGen('small')
+    while game == True:
+        getEvents()
+        displayImage()
